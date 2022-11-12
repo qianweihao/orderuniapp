@@ -6,6 +6,9 @@ const {getToken,Addurl,Tripurl} = require('../../config/databaseapi.js')
 
 const {regcheck} = require('../../config/checking.js')
 const { add } = require('nodemon/lib/rules')
+const {gentoken} = require('../../token/jwt.js')
+//验证token合法
+const {Auth} = require('../../token/auth.js')
 //注册接口
 router.post('/register',async ctx =>{
 	//post接收前端传来的参数
@@ -44,12 +47,37 @@ router.post('/register',async ctx =>{
 			const STR =  JSON.stringify(OBJ)
 			const addquery = `db.collection('business-acc').add({data:${STR}})`
 			const res =  await new getToken().posteve(Addurl,addquery) 
-			console.log(res)
+			//console.log(res)
 			new result(ctx,'注册成功').answer()
 		}
 	}catch(e){
 		new result(ctx,'注册失败，服务器发送错误',500).answer()
 	}
+})
+// 登录接口
+router.post('/login', async ctx=>{
+	let {account,password} = ctx.request.body
+	const query = `db.collection('business-acc').where({account:'${account}',password:'${password}'}).get()`
+	try{
+		const user = await new getToken().posteve(Tripurl,query)
+		console.log(user)
+		if(user.data.length == 0){
+			new result(ctx,'账号或密码错误',202).answer()
+		}else{
+			const OBJ = JSON.parse(user.data[0])
+			new result(ctx,'登录成功',200,{token:gentoken(OBJ.uid)}).answer()
+		}
+	}catch(e){
+		new result(ctx,'登录失败,服务器发生错误',500).answer()
+	}
+})
+
+//验证token
+router.get('/ceshi', new Auth().m, async ctx =>{
+	console.log('123')
+	console.log(ctx)
+	console.log(ctx.auth.uid)
+     
 })
 
 module.exports = router.routes()

@@ -13,9 +13,10 @@ let url = 'https://api.weixin.qq.com/cgi-bin/token?' + param
 let env = 'cloud1-2gdga1m2783758ca'
 //数据库插入记录
 let Addurl = 'https://api.weixin.qq.com/tcb/databaseadd?access_token='
-
+//数据库查询记录
 let Tripurl = 'https://api.weixin.qq.com/tcb/databasequery?access_token='
-
+//数据库更新记录
+let Updateurl ='https://api.weixin.qq.com/tcb/databaseupdate?access_token='
 class getToken{
 	constructor(){}
 	async gettoken(){
@@ -32,7 +33,7 @@ class getToken{
 			throw new result(e,500)
 		}
 	}
-	
+	//调用云开发http api接口
 	async posteve(dataurl,query){
 		try{
 			let token = await this.gettoken()
@@ -48,4 +49,4 @@ class getToken{
 		}
 	}
 }
-module.exports = {getToken,Addurl,Tripurl}
+module.exports = {getToken,Addurl,Tripurl,Updateurl}

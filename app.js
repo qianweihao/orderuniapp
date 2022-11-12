@@ -14,9 +14,15 @@ app.use(abnormal)
 
 //注册 登录
 const login = require('./router/login/login.js')
+//商家设置
+const uploadres = require('./router/merchant-infor/infor.js')
+
+//菜品管理
+const dish = require('./router/dish-manage/dish.js')
 //配置路由接口
 router.use('/api',login)
-
+router.use('/api',uploadres)
+router.use('/api',dish)
 app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(5000);
